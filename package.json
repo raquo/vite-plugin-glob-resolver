@@ -1,0 +1,38 @@
+{
+  "name": "@raquo/vite-plugin-glob-resolver",
+  "version": "0.1.0",
+  "description": "Vite plugin to resolve glob patterns in static imports",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raquo/vite-plugin-glob-resolver.git"
+  },
+  "keywords": [
+    "vite",
+    "vite-plugin",
+    "scala",
+    "scala-js"
+  ],
+  "author": {
+    "name": "Nikita Gazarov",
+    "url": "https://github.com/raquo"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/raquo/vite-plugin-glob-resolver/issues"
+  },
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/raquo"
+    }
+  ],
+  "homepage": "https://github.com/raquo/vite-plugin-glob-resolver",
+  "dependencies": {
+    "glob": "^10.3.10"
+  }
+}
