@@ -1,6 +1,6 @@
 # Glob Resolver Vite Plugin
 
-This [Vite](https://vitejs.dev/) plugin lets you import resources by their glob pattern when you prefix their name with `@find/`, for example if your `import "@find/**/foo.css"`, the plugin will use the [glob](https://github.com/isaacs/node-glob) package to find foo.css anywhere in your project, and will rewrite the import to import that file statically by its full path.
+This [Vite](https://vitejs.dev/) plugin lets you import resources by their glob pattern when you prefix their name with `@find/`, for example if you `import "@find/**/foo.css"`, the plugin will use the [glob](https://github.com/isaacs/node-glob) package to find foo.css anywhere in your project, and will rewrite the import to import that file statically by its full path.
 
 
 ## Motivation – [Scala.js](https://www.scala-js.org/)
@@ -22,6 +22,8 @@ If writing JS: `import "@find/**/foo.css"`
 
 In this example, `**/foo.css` is the glob pattern handed off to the [glob](https://github.com/isaacs/node-glob) package. Usually "**/foo.css" is enough to find the file, but if you get an error saying that multiple files matched the pattern, you will need to provide a more specific pattern to disambiguate the import, e.g. by specifying part of the path: `**/foo/foo.css`.
 
+Of course, you can also import JS files, e.g. if you want to manually write a JS file, and then create a facade to use it from Scala.js, e.g.: `JSImport("@find/**/foo.js")`. See also docs for [writing Scala.js facade types](https://www.scala-js.org/doc/interoperability/facade-types.html).
+
 Install this plugin:
 
 ```
@@ -32,18 +34,36 @@ Add to `vite.config.js`:
 
 ```js
 import globResolverPlugin from "@raquo/vite-plugin-glob-resolver";
-
-// Add to the list of plugins:
-globResolverPlugin({
-  // base path where to look for files
-  cwd: __dirname,
-  // file paths (glob patterns) to ignore
-  ignore: [
-    'node_modules/**',
-    'target/**' // relevant to Scala.js only
-  ]
+import { defineConfig } from 'vite'
+  
+// MAKE SURE TO ADD IT TO VITE'S `plugins` option in `defineConfig`:
+export default defineConfig({
+  ...
+  plugins: [
+    ...
+    globResolverPlugin({
+      // `cwd` specifies the base path where @find should look for files.
+      //   - `__dirname` is a node.js magic var containing the directory where
+      //     the current file (vite.config.js I guess) is located.
+      //   - Adjust `cwd` as needed depending on where your files are located.
+      cwd: __dirname,
+      // file paths (glob patterns) to ignore, relative to `cwd`
+      ignore: [
+        'node_modules/**',
+        'target/**' // relevant to Scala.js only
+      ]
+    }),
+    ...
+  ],
+  ...
 })
 ```
+
+See example usage in the [laminar demo project](https://github.com/raquo/laminar-full-stack-demo/blob/master/client/vite.config.js).
+
+See [Vite docs on using plugins](https://vite.dev/guide/using-plugins).
+
+As you can see in the [very short source](https://github.com/raquo/vite-plugin-glob-resolver/blob/master/index.js), this plugin throws errors prefixed with `globResolverPlugin:`. If you see other errors that mention vite's inability to resolve your `@find/...` string, they are likely coming from Vite itself, and may indicate that this plugin is not loaded correctly, so double-check your vite config, e.g. ensure you've added `globResolverPlugin(...)` to `plugins`.
 
 
 ## Author
